@@ -24,6 +24,10 @@ const developConfig: MachineConfig<IBuildContext, any, AnyEventObject> = {
     QUERY_FILE_CHANGED: {
       actions: `markQueryFilesDirty`,
     },
+    // Sent when webpack sees a changed file
+    SOURCE_FILE_CHANGED: {
+      actions: `markSourceFilesDirty`,
+    },
     // These are calls to the refresh endpoint. Also used by Gatsby Preview.
     // Saves the webhook body from the event into context, then reloads data
     WEBHOOK_RECEIVED: {
@@ -119,10 +123,26 @@ const developConfig: MachineConfig<IBuildContext, any, AnyEventObject> = {
             cond: ({ compiler }: IBuildContext): boolean => !compiler,
           },
           {
+            // If source files have changed, then recompile the JS bundle
+            target: `recompiling`,
+            cond: ({ sourceFilesDirty }: IBuildContext): boolean =>
+              !!sourceFilesDirty,
+          },
+          {
             // ...otherwise just wait.
             target: `waiting`,
           },
         ],
+      },
+    },
+    // Recompile the JS bundle
+    recompiling: {
+      invoke: {
+        src: `recompile`,
+        onDone: {
+          actions: `markSourceFilesClean`,
+          target: `waiting`,
+        },
       },
     },
     // Spin up webpack and socket.io
@@ -131,13 +151,16 @@ const developConfig: MachineConfig<IBuildContext, any, AnyEventObject> = {
         src: `startWebpackServer`,
         onDone: {
           target: `waiting`,
-          actions: `assignServers`,
+          actions: [
+            `assignServers`,
+            `spawnWebpackListener`,
+            `markSourceFilesClean`,
+          ],
         },
       },
     },
     // Idle, waiting for events that make us rebuild
     waiting: {
-      // We may want to save this is more places, but this should do for now
       entry: `saveDbState`,
       on: {
         // Forward these events to the child machine, so it can handle batching
