@@ -170,6 +170,9 @@ const developConfig: MachineConfig<IBuildContext, any, AnyEventObject> = {
         QUERY_FILE_CHANGED: {
           actions: forwardTo(`waiting`),
         },
+        SOURCE_FILE_CHANGED: {
+          actions: [forwardTo(`waiting`), `markSourceFilesDirty`],
+        },
         // This event is sent from the child
         EXTRACT_QUERIES_NOW: {
           target: `runningQueries`,

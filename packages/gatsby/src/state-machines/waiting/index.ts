@@ -37,6 +37,9 @@ export const waitingStates: MachineConfig<IWaitingContext, any, any> = {
         QUERY_FILE_CHANGED: {
           actions: `extractQueries`,
         },
+        SOURCE_FILE_CHANGED: {
+          actions: `extractQueries`,
+        },
       },
     },
 
