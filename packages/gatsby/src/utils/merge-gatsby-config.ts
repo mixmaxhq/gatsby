@@ -25,6 +25,7 @@ interface IGatsbyConfigInput {
     url: string
   }
   developMiddleware?(app: Express): void
+  serveMiddleware?(app: Express): void
 }
 
 type ConfigKey = keyof IGatsbyConfigInput

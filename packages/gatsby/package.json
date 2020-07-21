@@ -1,5 +1,5 @@
 {
-  "name": "gatsby",
+  "name": "@mixmaxhq/gatsby",
   "description": "Blazing fast modern site generator for React",
   "version": "2.24.7",
   "author": "Kyle Mathews <mathews.kyle@gmail.com>",

@@ -94,7 +94,7 @@ module.exports = async (program: IServeProgram): Promise<void> => {
   )
   const config = preferDefault(configModule)
 
-  const { pathPrefix: configPathPrefix } = config || {}
+  const { pathPrefix: configPathPrefix, serveMiddleware } = config || {}
 
   const pathPrefix = prefixPaths && configPathPrefix ? configPathPrefix : `/`
 
@@ -104,6 +104,10 @@ module.exports = async (program: IServeProgram): Promise<void> => {
   const router = express.Router()
 
   app.use(telemetry.expressMiddleware(`SERVE`))
+
+  if (serveMiddleware) {
+    serveMiddleware(app, program)
+  }
 
   router.use(compression())
   router.use(express.static(`public`, { dotfiles: `allow` }))

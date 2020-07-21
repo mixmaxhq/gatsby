@@ -10,6 +10,7 @@ export const KNOWN_CONFIG_KEYS = [
   `plugins`,
   `proxy`,
   `developMiddleware`,
+  `serveMiddleware`,
 ]
 
 export function didYouMean(

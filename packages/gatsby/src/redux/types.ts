@@ -56,6 +56,7 @@ export interface IGatsbyConfig {
   // @deprecated
   polyfill?: boolean
   developMiddleware?: any
+  serveMiddleware?: any
   proxy?: any
   pathPrefix?: string
   mapping?: Record<string, string>
